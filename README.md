@@ -158,3 +158,7 @@ For issues or questions:
 - Check pipeline logs in Databricks UI
 - Review GitHub Actions workflow logs
 - Validate bundle configuration locally
+
+## CI/CD Test
+
+This change tests the GitHub Actions workflow.
