@@ -32,27 +32,26 @@ jobs:
 
       - name: Validate Bundle Configuration
         run: |
-          cd ashley_furniture_pipeline
           databricks bundle validate --target dev
 
       - name: Check SQL Syntax (Bronze)
         run: |
           echo "✓ Validating Bronze layer SQL files..."
-          for file in ashley_furniture_pipeline/src/transformations/bronze/*.sql; do
+          for file in src/transformations/bronze/*.sql; do
             echo "Checking $file"
           done
 
       - name: Check SQL Syntax (Silver)
         run: |
           echo "✓ Validating Silver layer SQL files..."
-          for file in ashley_furniture_pipeline/src/transformations/silver/*.sql; do
+          for file in src/transformations/silver/*.sql; do
             echo "Checking $file"
           done
 
       - name: Check SQL Syntax (Gold)
         run: |
           echo "✓ Validating Gold layer SQL files..."
-          for file in ashley_furniture_pipeline/src/transformations/gold/*.sql; do
+          for file in src/transformations/gold/*.sql; do
             echo "Checking $file"
           done
 

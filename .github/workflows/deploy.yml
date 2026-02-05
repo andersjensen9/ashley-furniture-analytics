@@ -46,12 +46,10 @@ jobs:
 
       - name: Deploy to Dev
         run: |
-          cd ashley_furniture_pipeline
           databricks bundle deploy --target dev --auto-approve
 
       - name: Run Pipeline
         run: |
-          cd ashley_furniture_pipeline
           databricks bundle run ashley_furniture_medallion --target dev
 
       - name: Deployment Summary
@@ -86,7 +84,6 @@ jobs:
 
       - name: Deploy to Staging
         run: |
-          cd ashley_furniture_pipeline
           databricks bundle deploy --target staging --auto-approve
 
       - name: Deployment Summary
@@ -120,7 +117,6 @@ jobs:
 
       - name: Deploy to Production
         run: |
-          cd ashley_furniture_pipeline
           databricks bundle deploy --target prod --auto-approve
 
       - name: Deployment Summary
