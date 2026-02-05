@@ -8,6 +8,10 @@ variables:
   warehouse_id:
     description: "SQL Warehouse ID for queries and dashboards"
     default: "6235341b8a59c322"
+  catalog:
+    description: "Unity Catalog name"
+  schema:
+    description: "Target schema name"
 
 targets:
   dev:
