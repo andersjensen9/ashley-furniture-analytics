@@ -1,0 +1,36 @@
+bundle:
+  name: ashley_furniture_analytics
+
+include:
+  - resources/*.yml
+
+variables:
+  warehouse_id:
+    description: "SQL Warehouse ID for queries and dashboards"
+    default: "6235341b8a59c322"
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: https://fevm-andersjensen-fevm-1.cloud.databricks.com
+    variables:
+      catalog: andersjensen_fevm_1_catalog
+      schema: ashley_furniture_sdp_dev
+
+  staging:
+    mode: development
+    workspace:
+      host: https://fevm-andersjensen-fevm-1.cloud.databricks.com
+    variables:
+      catalog: andersjensen_fevm_1_catalog
+      schema: ashley_furniture_sdp_staging
+
+  prod:
+    mode: production
+    workspace:
+      host: https://fevm-andersjensen-fevm-1.cloud.databricks.com
+    variables:
+      catalog: andersjensen_fevm_1_catalog
+      schema: ashley_furniture_sdp_prod

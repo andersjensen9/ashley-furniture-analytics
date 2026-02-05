@@ -1,0 +1,39 @@
+resources:
+  pipelines:
+    ashley_furniture_medallion:
+      name: "[${bundle.target}] Ashley Furniture Medallion"
+      catalog: ${var.catalog}
+      target: ${var.schema}
+      serverless: true
+      continuous: false
+      channel: CURRENT
+      libraries:
+        - file:
+            path: ../src/transformations/bronze/bronze_stores.sql
+        - file:
+            path: ../src/transformations/bronze/bronze_products.sql
+        - file:
+            path: ../src/transformations/bronze/bronze_customers.sql
+        - file:
+            path: ../src/transformations/bronze/bronze_sales.sql
+        - file:
+            path: ../src/transformations/silver/silver_stores.sql
+        - file:
+            path: ../src/transformations/silver/silver_products.sql
+        - file:
+            path: ../src/transformations/silver/silver_customers.sql
+        - file:
+            path: ../src/transformations/silver/silver_sales.sql
+        - file:
+            path: ../src/transformations/gold/gold_sales_by_date.sql
+        - file:
+            path: ../src/transformations/gold/gold_sales_by_category.sql
+        - file:
+            path: ../src/transformations/gold/gold_sales_by_region.sql
+        - file:
+            path: ../src/transformations/gold/gold_customer_metrics.sql
+        - file:
+            path: ../src/transformations/gold/gold_product_performance.sql
+      permissions:
+        - level: CAN_VIEW
+          group_name: "users"

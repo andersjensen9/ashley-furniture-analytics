@@ -1,0 +1,130 @@
+name: CD - Deploy Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'resources/**'
+      - 'databricks.yml'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.environment == 'dev'
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks configure --token <<EOF
+          $DATABRICKS_HOST
+          $DATABRICKS_TOKEN
+          EOF
+
+      - name: Deploy to Dev
+        run: |
+          cd ashley_furniture_pipeline
+          databricks bundle deploy --target dev --auto-approve
+
+      - name: Run Pipeline
+        run: |
+          cd ashley_furniture_pipeline
+          databricks bundle run ashley_furniture_medallion --target dev
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Deployed to DEV environment"
+          echo "🔗 Pipeline: https://fevm-andersjensen-fevm-1.cloud.databricks.com/pipelines/"
+          echo "📊 Schema: andersjensen_fevm_1_catalog.ashley_furniture_sdp_dev"
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'staging'
+    environment: staging
+    needs: []
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks configure --token <<EOF
+          $DATABRICKS_HOST
+          $DATABRICKS_TOKEN
+          EOF
+
+      - name: Deploy to Staging
+        run: |
+          cd ashley_furniture_pipeline
+          databricks bundle deploy --target staging --auto-approve
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Deployed to STAGING environment"
+          echo "📊 Schema: andersjensen_fevm_1_catalog.ashley_furniture_sdp_staging"
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'prod'
+    environment: production
+    needs: []
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks configure --token <<EOF
+          $DATABRICKS_HOST
+          $DATABRICKS_TOKEN
+          EOF
+
+      - name: Deploy to Production
+        run: |
+          cd ashley_furniture_pipeline
+          databricks bundle deploy --target prod --auto-approve
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Deployed to PRODUCTION environment"
+          echo "⚠️  Production deployment complete - monitor pipeline health"
+          echo "📊 Schema: andersjensen_fevm_1_catalog.ashley_furniture_sdp_prod"
